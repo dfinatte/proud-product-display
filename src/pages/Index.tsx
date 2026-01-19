@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
+import Dashboard from "@/components/Dashboard";
 import Specifications from "@/components/Specifications";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -16,6 +17,9 @@ const Index = () => {
       </section>
       <section id="como-funciona">
         <HowItWorks />
+      </section>
+      <section id="plataforma">
+        <Dashboard />
       </section>
       <section id="especificacoes">
         <Specifications />
