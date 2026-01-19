@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, RadialBarChart, RadialBar
 } from "recharts";
-import { Activity, Droplets, Thermometer, Eye, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Activity, Droplets, Thermometer, Eye, TrendingUp, TrendingDown, Minus, Zap } from "lucide-react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 
 // Simulated real-time data
 const generateData = () => {
@@ -30,7 +31,11 @@ const StatusIndicator = ({ status }: { status: 'good' | 'warning' | 'critical' }
     critical: 'bg-destructive'
   };
   return (
-    <span className={`inline-block w-2 h-2 rounded-full ${colors[status]} animate-pulse`} />
+    <motion.span 
+      className={`inline-block w-2 h-2 rounded-full ${colors[status]}`}
+      animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+      transition={{ duration: 2, repeat: Infinity }}
+    />
   );
 };
 
@@ -43,6 +48,15 @@ const TrendIcon = ({ value }: { value: number }) => {
 const Dashboard = () => {
   const [data, setData] = useState(generateData());
   const [activeTab, setActiveTab] = useState<'ph' | 'turbidez' | 'temperatura'>('ph');
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -58,7 +72,7 @@ const Dashboard = () => {
         };
         return [...prev.slice(1), newPoint];
       });
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -115,17 +129,47 @@ const Dashboard = () => {
   ];
 
   return (
-    <section className="py-24 bg-water-deep relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse-slow delay-1000" />
+    <section ref={containerRef} className="py-24 bg-water-deep relative overflow-hidden">
+      {/* Animated background elements */}
+      <motion.div className="absolute inset-0" style={{ y }}>
+        <motion.div 
+          className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        <motion.div 
+          className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, delay: 1 }}
+        />
+      </motion.div>
+
+      {/* Grid pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="w-full h-full" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
+        }} />
       </div>
 
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-accent font-medium text-sm uppercase tracking-wider">Monitoramento</span>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={isInView ? { scale: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent/30 mb-6"
+          >
+            <Zap className="w-4 h-4 text-accent" />
+            <span className="text-accent font-medium text-sm uppercase tracking-wider">Monitoramento Live</span>
+          </motion.div>
           <h2 className="font-display text-4xl lg:text-5xl font-bold text-primary-foreground mt-4 mb-6">
             Plataforma de 
             <span className="text-accent"> Dados em Tempo Real</span>
@@ -134,57 +178,94 @@ const Dashboard = () => {
             Visualize o desempenho do sistema com gráficos atualizados automaticamente. 
             Compare parâmetros antes e depois do tratamento biológico.
           </p>
-        </div>
+        </motion.div>
 
         {/* Dashboard Container */}
-        <div className="bg-card/10 backdrop-blur-xl rounded-3xl border border-white/10 p-6 lg:p-8 shadow-elevated">
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="bg-card/10 backdrop-blur-xl rounded-3xl border border-white/10 p-6 lg:p-8 shadow-elevated"
+        >
           {/* Status Bar */}
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+          <motion.div 
+            className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-white/10"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.5 }}
+          >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-bio-green/20 flex items-center justify-center">
+              <motion.div 
+                className="w-10 h-10 rounded-xl bg-bio-green/20 flex items-center justify-center"
+                animate={{ boxShadow: ["0 0 0 0 rgba(0, 150, 136, 0)", "0 0 0 10px rgba(0, 150, 136, 0.2)", "0 0 0 0 rgba(0, 150, 136, 0)"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
                 <Activity className="w-5 h-5 text-bio-green" />
-              </div>
+              </motion.div>
               <div>
                 <p className="text-primary-foreground font-medium">Módulo BioSynthNet #001</p>
                 <p className="text-water-medium text-sm">Online • Última atualização: agora</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-bio-green/20 border border-bio-green/30">
+            <motion.div 
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-bio-green/20 border border-bio-green/30"
+              whileHover={{ scale: 1.05 }}
+            >
               <StatusIndicator status="good" />
               <span className="text-bio-green text-sm font-medium">Sistema Operacional</span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Metrics Cards */}
           <div className="grid md:grid-cols-3 gap-4 mb-8">
-            {metrics.map((metric) => (
-              <button
+            {metrics.map((metric, index) => (
+              <motion.button
                 key={metric.id}
                 onClick={() => setActiveTab(metric.id as typeof activeTab)}
-                className={`group p-5 rounded-2xl border transition-all duration-300 text-left ${
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                className={`group p-5 rounded-2xl border transition-all duration-300 text-left relative overflow-hidden ${
                   activeTab === metric.id
                     ? 'bg-white/10 border-accent/50 shadow-lg'
                     : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
                 }`}
               >
+                {/* Active indicator line */}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-hero"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: activeTab === metric.id ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    activeTab === metric.id ? 'bg-accent' : 'bg-white/10'
-                  }`}>
+                  <motion.div 
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                      activeTab === metric.id ? 'bg-accent' : 'bg-white/10'
+                    }`}
+                    whileHover={{ rotate: 10 }}
+                  >
                     <metric.icon className={`w-5 h-5 ${
                       activeTab === metric.id ? 'text-primary-foreground' : 'text-water-medium'
                     }`} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <StatusIndicator status={metric.status as 'good' | 'warning' | 'critical'} />
-                  </div>
+                  </motion.div>
+                  <StatusIndicator status={metric.status as 'good' | 'warning' | 'critical'} />
                 </div>
                 
                 <p className="text-water-medium text-sm mb-1">{metric.label}</p>
                 <div className="flex items-end gap-2">
-                  <p className="text-3xl font-display font-bold text-primary-foreground">
+                  <motion.p 
+                    className="text-3xl font-display font-bold text-primary-foreground"
+                    key={metric.saida}
+                    initial={{ opacity: 0.5, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     {metric.saida}
-                  </p>
+                  </motion.p>
                   <span className="text-water-medium text-sm mb-1">{metric.unit}</span>
                   <div className="flex items-center gap-1 ml-auto">
                     <TrendIcon value={metric.trend} />
@@ -195,22 +276,34 @@ const Dashboard = () => {
                   <div className="mt-3 pt-3 border-t border-white/10">
                     <div className="flex justify-between text-sm">
                       <span className="text-water-medium">Melhoria</span>
-                      <span className="text-bio-green font-medium">+{metric.improvement}%</span>
+                      <motion.span 
+                        className="text-bio-green font-medium"
+                        key={metric.improvement}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        +{metric.improvement}%
+                      </motion.span>
                     </div>
                   </div>
                 )}
-              </button>
+              </motion.button>
             ))}
           </div>
 
           {/* Main Chart Area */}
           <div className="grid lg:grid-cols-4 gap-6">
             {/* Line Chart */}
-            <div className="lg:col-span-3 bg-white/5 rounded-2xl p-6 border border-white/10">
-              <div className="flex items-center justify-between mb-6">
+            <motion.div 
+              className="lg:col-span-3 bg-white/5 rounded-2xl p-6 border border-white/10"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.6 }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div>
                   <h3 className="font-display text-lg font-semibold text-primary-foreground">
-                    {activeMetric.label} - Últimas 60 minutos
+                    {activeMetric.label} - Últimos 60 minutos
                   </h3>
                   <p className="text-water-medium text-sm">Comparação entrada vs saída</p>
                 </div>
@@ -306,12 +399,18 @@ const Dashboard = () => {
                   )}
                 </ResponsiveContainer>
               </div>
-            </div>
+            </motion.div>
 
             {/* Side Stats */}
             <div className="space-y-4">
               {/* Efficiency Gauge */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <motion.div 
+                className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.7 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <h4 className="text-water-medium text-sm mb-4">Eficiência de Remoção</h4>
                 <div className="h-32 relative">
                   <ResponsiveContainer width="100%" height="100%">
@@ -334,55 +433,86 @@ const Dashboard = () => {
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center -mt-4">
-                      <p className="text-3xl font-display font-bold text-accent">
+                      <motion.p 
+                        className="text-3xl font-display font-bold text-accent"
+                        key={metrics[1].improvement}
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                      >
                         {metrics[1].improvement}%
-                      </p>
+                      </motion.p>
                       <p className="text-water-medium text-xs">Turbidez</p>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Quick Stats */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <motion.div 
+                className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.8 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <h4 className="text-water-medium text-sm mb-4">Resumo do Dia</h4>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-water-medium text-sm">Volume tratado</span>
-                    <span className="text-primary-foreground font-medium">47.5 L</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-water-medium text-sm">Ciclos completos</span>
-                    <span className="text-primary-foreground font-medium">8</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-water-medium text-sm">Tempo de operação</span>
-                    <span className="text-primary-foreground font-medium">6h 42m</span>
-                  </div>
+                  {[
+                    { label: "Volume tratado", value: "47.5 L" },
+                    { label: "Ciclos completos", value: "8" },
+                    { label: "Tempo de operação", value: "6h 42m" },
+                  ].map((stat, i) => (
+                    <motion.div 
+                      key={stat.label}
+                      className="flex justify-between items-center"
+                      initial={{ opacity: 0 }}
+                      animate={isInView ? { opacity: 1 } : {}}
+                      transition={{ delay: 0.9 + i * 0.1 }}
+                    >
+                      <span className="text-water-medium text-sm">{stat.label}</span>
+                      <span className="text-primary-foreground font-medium">{stat.value}</span>
+                    </motion.div>
+                  ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* LED Indicators */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <motion.div 
+                className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.9 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <h4 className="text-water-medium text-sm mb-4">Status do Módulo</h4>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full bg-bio-green shadow-[0_0_10px_hsl(160,60%,40%)]" />
-                    <span className="text-primary-foreground text-sm">Parâmetros normais</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full bg-bio-green shadow-[0_0_10px_hsl(160,60%,40%)]" />
-                    <span className="text-primary-foreground text-sm">Cartucho ativo</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full bg-bio-green shadow-[0_0_10px_hsl(160,60%,40%)]" />
-                    <span className="text-primary-foreground text-sm">Conectividade OK</span>
-                  </div>
+                  {[
+                    "Parâmetros normais",
+                    "Cartucho ativo",
+                    "Conectividade OK"
+                  ].map((status, i) => (
+                    <motion.div 
+                      key={status}
+                      className="flex items-center gap-3"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ delay: 1 + i * 0.1 }}
+                    >
+                      <motion.div 
+                        className="w-4 h-4 rounded-full bg-bio-green"
+                        animate={{ 
+                          boxShadow: ["0 0 5px hsl(160,60%,40%)", "0 0 15px hsl(160,60%,40%)", "0 0 5px hsl(160,60%,40%)"]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                      />
+                      <span className="text-primary-foreground text-sm">{status}</span>
+                    </motion.div>
+                  ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
