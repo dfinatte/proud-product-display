@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-biosynthnet.jpg";
-import { Droplets, Activity, Leaf, ChevronDown } from "lucide-react";
+import { Droplets, Activity, Leaf } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
@@ -144,16 +145,18 @@ const Hero = () => {
                 <Droplets className="w-5 h-5 ml-2" />
               </motion.div>
             </Button>
-            <Button variant="heroOutline" size="lg" className="group overflow-hidden relative">
-              <motion.div
-                className="absolute inset-0 bg-accent/10"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "0%" }}
-                transition={{ duration: 0.3 }}
-              />
-              <Activity className="w-5 h-5 mr-2 relative z-10" />
-              <span className="relative z-10">Ver Plataforma</span>
-            </Button>
+            <Link to="/demo">
+              <Button variant="heroOutline" size="lg" className="group overflow-hidden relative">
+                <motion.div
+                  className="absolute inset-0 bg-accent/10"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "0%" }}
+                  transition={{ duration: 0.3 }}
+                />
+                <Activity className="w-5 h-5 mr-2 relative z-10" />
+                <span className="relative z-10">Ver Plataforma</span>
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Stats */}

@@ -96,8 +96,8 @@ const Contact = () => {
 
             <div className="space-y-6">
               {[
-                { icon: Mail, label: "Email", value: "contato@biosynthnet.com.br" },
-                { icon: Phone, label: "Telefone", value: "+55 (11) 99999-0000" },
+                { icon: Mail, label: "Email", value: "biosynthnet@gmail.com" },
+                { icon: Phone, label: "Telefone", value: "+55 (11) 95035-3177" },
                 { icon: MapPin, label: "Localização", value: "São Paulo, Brasil" },
               ].map((item, index) => (
                 <motion.div 
