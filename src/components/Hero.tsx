@@ -4,8 +4,10 @@ import { Droplets, Activity, Leaf } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -92,7 +94,7 @@ const Hero = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent/30 text-accent mb-8"
           >
             <Leaf className="w-4 h-4" />
-            <span className="text-sm font-medium">Tecnologia Ambiental Sustentável</span>
+            <span className="text-sm font-medium">{t("hero.badge")}</span>
           </motion.div>
 
           {/* Title with staggered animation */}
@@ -124,9 +126,7 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="text-lg lg:text-xl text-water-medium leading-relaxed mb-10 max-w-2xl"
           >
-            Sistema modular de tratamento de água integrando bioremediação 
-            com monitoramento ambiental em tempo real. Transformando processos 
-            biológicos invisíveis em informações acessíveis.
+            {t("hero.subtitle")}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -137,7 +137,7 @@ const Hero = () => {
             className="flex flex-col sm:flex-row gap-4"
           >
             <Button variant="hero" size="lg" className="group">
-              <span>Saiba Mais</span>
+              <span>{t("hero.learnMore")}</span>
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -154,7 +154,7 @@ const Hero = () => {
                   transition={{ duration: 0.3 }}
                 />
                 <Activity className="w-5 h-5 mr-2 relative z-10" />
-                <span className="relative z-10">Ver Plataforma</span>
+                <span className="relative z-10">{t("hero.viewPlatform")}</span>
               </Button>
             </Link>
           </motion.div>
@@ -167,9 +167,9 @@ const Hero = () => {
             className="grid grid-cols-3 gap-8 mt-16 pt-8 border-t border-water-medium/20"
           >
             {[
-              { value: "pH", label: "Monitoramento" },
-              { value: "24/7", label: "Tempo Real" },
-              { value: "IoT", label: "Conectividade" },
+              { value: "pH", label: t("hero.monitoring") },
+              { value: "24/7", label: t("hero.realTime") },
+              { value: "IoT", label: t("hero.connectivity") },
             ].map((stat, index) => (
               <motion.div 
                 key={index}
@@ -194,7 +194,7 @@ const Hero = () => {
         transition={{ delay: 2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-water-medium"
       >
-        <span className="text-sm">Scroll</span>
+        <span className="text-sm">{t("hero.scroll")}</span>
         <motion.div 
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}

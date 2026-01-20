@@ -1,7 +1,10 @@
 import { Droplets, Github, Linkedin, Twitter, ArrowUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
+  
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -49,7 +52,7 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            © 2025 BioSynthNet Module™. Tecnologia Ambiental.
+            {t("footer.copyright")}
           </motion.p>
 
           {/* Social & Back to Top */}

@@ -537,7 +537,7 @@ export const translations: Translations = {
     en: "Distributed IoT network",
     es: "Red distribuida IoT",
   },
-  "specs.fullPotability": {
+  "specs.fullPotabilization": {
     pt: "Potabilização completa",
     en: "Complete potabilization",
     es: "Potabilización completa",

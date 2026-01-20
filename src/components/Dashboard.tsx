@@ -5,6 +5,7 @@ import {
 } from "recharts";
 import { Activity, Droplets, Thermometer, Eye, TrendingUp, TrendingDown, Minus, Zap } from "lucide-react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Simulated real-time data
 const generateData = () => {
@@ -46,6 +47,7 @@ const TrendIcon = ({ value }: { value: number }) => {
 };
 
 const Dashboard = () => {
+  const { t } = useLanguage();
   const [data, setData] = useState(generateData());
   const [activeTab, setActiveTab] = useState<'ph' | 'turbidez' | 'temperatura'>('ph');
   const containerRef = useRef(null);

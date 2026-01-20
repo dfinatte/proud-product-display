@@ -4,8 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone, Send, Sparkles } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
@@ -71,7 +73,7 @@ const Contact = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent/30 mb-6"
             >
               <Sparkles className="w-4 h-4 text-accent" />
-              <span className="text-accent font-medium text-sm uppercase tracking-wider">Contato</span>
+              <span className="text-accent font-medium text-sm uppercase tracking-wider">{t("contact.badge")}</span>
             </motion.div>
             
             <motion.h2 
@@ -80,8 +82,8 @@ const Contact = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.1 }}
             >
-              Vamos Construir um
-              <span className="block text-accent">Futuro Sustentável</span>
+              {t("contact.title1")}
+              <span className="block text-accent">{t("contact.title2")}</span>
             </motion.h2>
             <motion.p 
               className="text-water-medium text-lg leading-relaxed mb-10"
@@ -89,19 +91,17 @@ const Contact = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Interessado em implementar o BioSynthNet Module™ em sua comunidade, 
-              escola ou organização? Entre em contato para saber mais sobre parcerias 
-              e implantação do sistema.
+              {t("contact.description")}
             </motion.p>
 
             <div className="space-y-6">
               {[
-                { icon: Mail, label: "Email", value: "biosynthnet@gmail.com" },
-                { icon: Phone, label: "Telefone", value: "+55 (11) 95035-3177" },
-                { icon: MapPin, label: "Localização", value: "São Paulo, Brasil" },
+                { icon: Mail, labelKey: "contact.email", value: "biosynthnet@gmail.com" },
+                { icon: Phone, labelKey: "contact.phone", value: "+55 (11) 95035-3177" },
+                { icon: MapPin, labelKey: "contact.location", value: "São Paulo, Brasil" },
               ].map((item, index) => (
                 <motion.div 
-                  key={item.label}
+                  key={item.labelKey}
                   className="flex items-center gap-4 group cursor-pointer"
                   initial={{ opacity: 0, x: -30 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -115,7 +115,7 @@ const Contact = () => {
                     <item.icon className="w-5 h-5 text-accent group-hover:text-primary-foreground transition-colors" />
                   </motion.div>
                   <div>
-                    <p className="text-water-medium text-sm">{item.label}</p>
+                    <p className="text-water-medium text-sm">{t(item.labelKey)}</p>
                     <p className="text-primary-foreground font-medium">{item.value}</p>
                   </div>
                 </motion.div>
@@ -139,30 +139,38 @@ const Contact = () => {
             />
 
             <h3 className="font-display text-2xl font-semibold text-card-foreground mb-6 relative z-10">
-              Envie sua Mensagem
+              {t("contact.sendMessage")}
             </h3>
             <form className="space-y-5 relative z-10">
               <div className="grid sm:grid-cols-2 gap-5">
-                {[
-                  { label: "Nome", placeholder: "Seu nome", type: "text" },
-                  { label: "Email", placeholder: "seu@email.com", type: "email" },
-                ].map((field, index) => (
-                  <motion.div
-                    key={field.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                      {field.label}
-                    </label>
-                    <Input 
-                      type={field.type}
-                      placeholder={field.placeholder} 
-                      className="h-12 rounded-xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
-                  </motion.div>
-                ))}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.5 }}
+                >
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                    {t("contact.name")}
+                  </label>
+                  <Input 
+                    type="text"
+                    placeholder={t("contact.namePlaceholder")} 
+                    className="h-12 rounded-xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.6 }}
+                >
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                    {t("contact.email")}
+                  </label>
+                  <Input 
+                    type="email"
+                    placeholder={t("contact.emailPlaceholder")} 
+                    className="h-12 rounded-xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </motion.div>
               </div>
 
               <motion.div
@@ -171,10 +179,10 @@ const Contact = () => {
                 transition={{ delay: 0.7 }}
               >
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                  Organização
+                  {t("contact.organization")}
                 </label>
                 <Input 
-                  placeholder="Escola, ONG, Empresa..." 
+                  placeholder={t("contact.organizationPlaceholder")} 
                   className="h-12 rounded-xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 />
               </motion.div>
@@ -185,10 +193,10 @@ const Contact = () => {
                 transition={{ delay: 0.8 }}
               >
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                  Mensagem
+                  {t("contact.message")}
                 </label>
                 <Textarea 
-                  placeholder="Conte-nos sobre seu interesse no BioSynthNet Module™" 
+                  placeholder={t("contact.messagePlaceholder")} 
                   rows={4}
                   className="rounded-xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none transition-all"
                 />
@@ -208,7 +216,7 @@ const Contact = () => {
                     whileHover={{ x: "100%" }}
                     transition={{ duration: 0.5 }}
                   />
-                  <span className="relative z-10">Enviar Mensagem</span>
+                  <span className="relative z-10">{t("contact.submit")}</span>
                   <motion.div
                     className="relative z-10"
                     animate={{ x: [0, 5, 0] }}
