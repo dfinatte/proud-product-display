@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Droplets, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import LanguageSelector from "./LanguageSelector";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -113,7 +114,14 @@ const Navbar = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
-              className="ml-4"
+              className="ml-2"
+            >
+              <LanguageSelector variant={isScrolled ? "dark" : "light"} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
             >
               <Button 
                 variant={isScrolled ? "default" : "hero"} 
