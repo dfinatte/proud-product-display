@@ -1,47 +1,10 @@
 import { ArrowDown } from "lucide-react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const steps = [
-  {
-    number: "01",
-    title: "Captação da Água",
-    description: "A água é inserida no sistema por gravidade ou bombeamento. Sensores registram pH, turbidez e temperatura de referência.",
-    highlight: "Medição inicial"
-  },
-  {
-    number: "02",
-    title: "Pré-filtragem Física",
-    description: "Camada de algodão ou fibras naturais remove partículas sólidas maiores, protegendo o cartucho biológico.",
-    highlight: "Proteção do sistema"
-  },
-  {
-    number: "03",
-    title: "Tratamento Biológico",
-    description: "No cartucho, o consórcio de Trametes versicolor e Bacillus subtilis degrada poluentes orgânicos através de enzimas ligninolíticas.",
-    highlight: "Core do sistema"
-  },
-  {
-    number: "04",
-    title: "Polimento Final",
-    description: "Camada opcional de areia fina ou carvão vegetal estabiliza a aparência visual e reduz turbidez remanescente.",
-    highlight: "Opcional"
-  },
-  {
-    number: "05",
-    title: "Medição Pós-Tratamento",
-    description: "Os mesmos sensores registram novamente os parâmetros, permitindo calcular a eficácia do tratamento.",
-    highlight: "Comparação de dados"
-  },
-  {
-    number: "06",
-    title: "Visualização Digital",
-    description: "Dados são processados pelo microcontrolador e enviados para a plataforma web com gráficos e alertas.",
-    highlight: "Monitoramento IoT"
-  }
-];
-
-const StepCard = ({ step, index }: { step: typeof steps[0]; index: number }) => {
+const StepCard = ({ step, index, totalSteps }: { step: { number: string; titleKey: string; descKey: string; highlightKey: string }; index: number; totalSteps: number }) => {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
@@ -54,7 +17,7 @@ const StepCard = ({ step, index }: { step: typeof steps[0]; index: number }) => 
       transition={{ duration: 0.5 }}
     >
       {/* Animated Connector Line */}
-      {index < steps.length - 1 && (
+      {index < totalSteps - 1 && (
         <motion.div 
           className="absolute left-8 lg:left-12 top-24 bottom-0 w-0.5 origin-top"
           style={{
@@ -104,24 +67,24 @@ const StepCard = ({ step, index }: { step: typeof steps[0]; index: number }) => 
         >
           <div className="flex flex-wrap items-center gap-3 mb-3">
             <h3 className="font-display text-xl lg:text-2xl font-semibold text-foreground">
-              {step.title}
+              {t(step.titleKey)}
             </h3>
             <motion.span 
               className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground"
               whileHover={{ scale: 1.05, backgroundColor: "hsl(var(--accent))", color: "white" }}
               transition={{ duration: 0.2 }}
             >
-              {step.highlight}
+              {t(step.highlightKey)}
             </motion.span>
           </div>
           <p className="text-muted-foreground leading-relaxed lg:text-lg">
-            {step.description}
+            {t(step.descKey)}
           </p>
         </motion.div>
       </motion.div>
 
       {/* Animated Arrow */}
-      {index < steps.length - 1 && (
+      {index < totalSteps - 1 && (
         <motion.div 
           className="flex justify-start pl-5 lg:pl-9 -mt-4 mb-4"
           initial={{ opacity: 0 }}
@@ -141,6 +104,7 @@ const StepCard = ({ step, index }: { step: typeof steps[0]; index: number }) => 
 };
 
 const HowItWorks = () => {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
@@ -151,6 +115,45 @@ const HowItWorks = () => {
   });
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  const steps = [
+    {
+      number: "01",
+      titleKey: "howItWorks.step1.title",
+      descKey: "howItWorks.step1.desc",
+      highlightKey: "howItWorks.step1.highlight"
+    },
+    {
+      number: "02",
+      titleKey: "howItWorks.step2.title",
+      descKey: "howItWorks.step2.desc",
+      highlightKey: "howItWorks.step2.highlight"
+    },
+    {
+      number: "03",
+      titleKey: "howItWorks.step3.title",
+      descKey: "howItWorks.step3.desc",
+      highlightKey: "howItWorks.step3.highlight"
+    },
+    {
+      number: "04",
+      titleKey: "howItWorks.step4.title",
+      descKey: "howItWorks.step4.desc",
+      highlightKey: "howItWorks.step4.highlight"
+    },
+    {
+      number: "05",
+      titleKey: "howItWorks.step5.title",
+      descKey: "howItWorks.step5.desc",
+      highlightKey: "howItWorks.step5.highlight"
+    },
+    {
+      number: "06",
+      titleKey: "howItWorks.step6.title",
+      descKey: "howItWorks.step6.desc",
+      highlightKey: "howItWorks.step6.highlight"
+    }
+  ];
 
   return (
     <section ref={containerRef} className="py-24 bg-card relative overflow-hidden">
@@ -175,7 +178,7 @@ const HowItWorks = () => {
             transition={{ duration: 0.6 }}
             className="text-accent font-medium text-sm uppercase tracking-wider"
           >
-            Processo
+            {t("howItWorks.label")}
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
@@ -183,7 +186,7 @@ const HowItWorks = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-4 mb-6"
           >
-            Como <span className="text-gradient">Funciona</span>
+            {t("howItWorks.title")} <span className="text-gradient">{t("howItWorks.title2")}</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -191,15 +194,14 @@ const HowItWorks = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-muted-foreground text-lg leading-relaxed"
           >
-            Um fluxo integrado que combina filtragem física, tratamento biológico 
-            e monitoramento digital para resultados transparentes.
+            {t("howItWorks.description")}
           </motion.p>
         </motion.div>
 
         {/* Steps */}
         <div className="max-w-4xl mx-auto">
           {steps.map((step, index) => (
-            <StepCard key={index} step={step} index={index} />
+            <StepCard key={index} step={step} index={index} totalSteps={steps.length} />
           ))}
         </div>
       </div>

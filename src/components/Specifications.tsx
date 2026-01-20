@@ -1,45 +1,47 @@
 import { Check, X } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-const specs = [
-  { label: "Volume tratado", value: "5-10 L por ciclo" },
-  { label: "Tipo de fluxo", value: "Contínuo por gravidade ou batelada" },
-  { label: "Sensores", value: "pH, Turbidez, Temperatura" },
-  { label: "Microcontrolador", value: "Arduino / ESP32" },
-  { label: "Conectividade", value: "WiFi, MQTT, HTTP" },
-  { label: "Manutenção", value: "Substituição periódica do cartucho" },
-];
-
-const capabilities = [
-  { feature: "Redução de turbidez", supported: true },
-  { feature: "Estabilização de pH", supported: true },
-  { feature: "Degradação de matéria orgânica", supported: true },
-  { feature: "Monitoramento em tempo real", supported: true },
-  { feature: "Rede distribuída IoT", supported: true },
-  { feature: "Potabilização completa", supported: false },
-  { feature: "Remoção de metais pesados", supported: false },
-  { feature: "Substituição de tratamento industrial", supported: false },
-];
-
-const organisms = [
-  {
-    name: "Trametes versicolor",
-    type: "Fungo",
-    function: "Degradação enzimática de compostos orgânicos complexos através de enzimas ligninolíticas (laccases, peroxidases)"
-  },
-  {
-    name: "Bacillus subtilis",
-    type: "Bactéria",
-    function: "Estabilização do biofilme, produção de enzimas hidrolíticas e competição com microrganismos indesejáveis"
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Specifications = () => {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const headerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+
+  const specs = [
+    { labelKey: "specs.volume", valueKey: "specs.volumeValue" },
+    { labelKey: "specs.flowType", valueKey: "specs.flowTypeValue" },
+    { labelKey: "specs.sensors", valueKey: "specs.sensorsValue" },
+    { labelKey: "specs.microcontroller", value: "Arduino / ESP32" },
+    { labelKey: "specs.connectivity", value: "WiFi, MQTT, HTTP" },
+    { labelKey: "specs.maintenance", valueKey: "specs.maintenanceValue" },
+  ];
+
+  const capabilities = [
+    { featureKey: "specs.turbidityReduction", supported: true },
+    { featureKey: "specs.phStabilization", supported: true },
+    { featureKey: "specs.organicDegradation", supported: true },
+    { featureKey: "specs.realTimeMonitoring", supported: true },
+    { featureKey: "specs.iotNetwork", supported: true },
+    { featureKey: "specs.fullPotabilization", supported: false },
+    { featureKey: "specs.heavyMetals", supported: false },
+    { featureKey: "specs.industrialReplacement", supported: false },
+  ];
+
+  const organisms = [
+    {
+      name: "Trametes versicolor",
+      typeKey: "specs.fungus",
+      functionKey: "specs.trametesFn"
+    },
+    {
+      name: "Bacillus subtilis",
+      typeKey: "specs.bacteria",
+      functionKey: "specs.bacillusFn"
+    }
+  ];
 
   return (
     <section ref={containerRef} className="py-24 bg-background relative overflow-hidden">
@@ -63,7 +65,7 @@ const Specifications = () => {
             transition={{ duration: 0.6 }}
             className="text-accent font-medium text-sm uppercase tracking-wider"
           >
-            Especificações
+            {t("specs.label")}
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
@@ -71,7 +73,7 @@ const Specifications = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-4 mb-6"
           >
-            Detalhes <span className="text-gradient">Técnicos</span>
+            {t("specs.title1")} <span className="text-gradient">{t("specs.title2")}</span>
           </motion.h2>
         </motion.div>
 
@@ -87,7 +89,7 @@ const Specifications = () => {
               whileHover={{ y: -5, boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.1)" }}
             >
               <h3 className="font-display text-2xl font-semibold text-card-foreground mb-6">
-                Especificações do Sistema
+                {t("specs.systemSpecs")}
               </h3>
               <div className="space-y-4">
                 {specs.map((spec, index) => (
@@ -99,8 +101,8 @@ const Specifications = () => {
                     transition={{ delay: 0.1 + index * 0.05 }}
                     whileHover={{ x: 5 }}
                   >
-                    <span className="text-muted-foreground">{spec.label}</span>
-                    <span className="font-medium text-foreground">{spec.value}</span>
+                    <span className="text-muted-foreground">{t(spec.labelKey)}</span>
+                    <span className="font-medium text-foreground">{spec.valueKey ? t(spec.valueKey) : spec.value}</span>
                   </motion.div>
                 ))}
               </div>
@@ -115,7 +117,7 @@ const Specifications = () => {
               whileHover={{ y: -5, boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.1)" }}
             >
               <h3 className="font-display text-2xl font-semibold text-card-foreground mb-6">
-                Consórcio Biológico
+                {t("specs.bioConsortium")}
               </h3>
               <div className="space-y-6">
                 {organisms.map((org, index) => (
@@ -135,14 +137,14 @@ const Specifications = () => {
                         className="px-2 py-0.5 rounded text-xs font-medium bg-bio-green text-primary-foreground"
                         whileHover={{ scale: 1.1 }}
                       >
-                        {org.type}
+                        {t(org.typeKey)}
                       </motion.span>
                       <span className="font-display font-semibold text-foreground italic">
                         {org.name}
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed relative z-10">
-                      {org.function}
+                      {t(org.functionKey)}
                     </p>
                   </motion.div>
                 ))}
@@ -158,10 +160,10 @@ const Specifications = () => {
             transition={{ duration: 0.7, delay: 0.3 }}
           >
             <h3 className="font-display text-2xl font-semibold text-card-foreground mb-6">
-              Capacidades e Limitações
+              {t("specs.capabilities")}
             </h3>
             <p className="text-muted-foreground text-sm mb-6">
-              Transparência sobre o que o sistema pode e não pode fazer.
+              {t("specs.capabilitiesDesc")}
             </p>
             <div className="space-y-3">
               {capabilities.map((cap, index) => (
@@ -197,7 +199,7 @@ const Specifications = () => {
                     )}
                   </motion.div>
                   <span className={`font-medium ${cap.supported ? "text-foreground" : "text-muted-foreground"}`}>
-                    {cap.feature}
+                    {t(cap.featureKey)}
                   </span>
                 </motion.div>
               ))}

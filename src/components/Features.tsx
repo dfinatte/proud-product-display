@@ -2,41 +2,10 @@ import { Droplets, Thermometer, Activity, Shield, RefreshCw, Wifi } from "lucide
 import bioModule from "@/assets/bio-module.jpg";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const features = [
-  {
-    icon: Droplets,
-    title: "Bioremediação Ativa",
-    description: "Consórcio de fungos (Trametes versicolor) e bactérias (Bacillus subtilis) para degradação de poluentes orgânicos."
-  },
-  {
-    icon: Activity,
-    title: "Monitoramento pH",
-    description: "Sensores de baixo custo monitoram pH, turbidez e temperatura antes e depois do tratamento."
-  },
-  {
-    icon: Thermometer,
-    title: "Análise em Tempo Real",
-    description: "Dados enviados para plataforma web, permitindo acompanhar o desempenho do sistema remotamente."
-  },
-  {
-    icon: Shield,
-    title: "Biossegurança",
-    description: "Microrganismos não patogênicos imobilizados em matriz biodegradável, impedindo liberação no ambiente."
-  },
-  {
-    icon: RefreshCw,
-    title: "Cartucho Substituível",
-    description: "Sistema modular com cartuchos biológicos de fácil substituição, sem contato direto com os microrganismos."
-  },
-  {
-    icon: Wifi,
-    title: "Conectividade IoT",
-    description: "Comunicação via MQTT ou HTTP com Arduino/ESP32 para integração em rede distribuída."
-  }
-];
-
-const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: number }) => {
+const FeatureCard = ({ feature, index }: { feature: { icon: React.ElementType; titleKey: string; descKey: string }; index: number }) => {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -71,10 +40,10 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
         </motion.div>
 
         <h3 className="font-display text-xl font-semibold text-card-foreground mb-3">
-          {feature.title}
+          {t(feature.titleKey)}
         </h3>
         <p className="text-muted-foreground leading-relaxed">
-          {feature.description}
+          {t(feature.descKey)}
         </p>
 
         {/* Animated underline */}
@@ -90,10 +59,44 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
 };
 
 const Features = () => {
+  const { t } = useLanguage();
   const headerRef = useRef(null);
   const imageRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
   const isImageInView = useInView(imageRef, { once: true, margin: "-100px" });
+
+  const features = [
+    {
+      icon: Droplets,
+      titleKey: "features.bioremediation.title",
+      descKey: "features.bioremediation.desc"
+    },
+    {
+      icon: Activity,
+      titleKey: "features.monitoring.title",
+      descKey: "features.monitoring.desc"
+    },
+    {
+      icon: Thermometer,
+      titleKey: "features.realtime.title",
+      descKey: "features.realtime.desc"
+    },
+    {
+      icon: Shield,
+      titleKey: "features.biosafety.title",
+      descKey: "features.biosafety.desc"
+    },
+    {
+      icon: RefreshCw,
+      titleKey: "features.cartridge.title",
+      descKey: "features.cartridge.desc"
+    },
+    {
+      icon: Wifi,
+      titleKey: "features.iot.title",
+      descKey: "features.iot.desc"
+    }
+  ];
 
   return (
     <section className="py-24 bg-gradient-water relative overflow-hidden">
@@ -129,7 +132,7 @@ const Features = () => {
             transition={{ duration: 0.6 }}
             className="text-accent font-medium text-sm uppercase tracking-wider"
           >
-            Funcionalidades
+            {t("features.label")}
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
@@ -137,8 +140,8 @@ const Features = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-4 mb-6"
           >
-            Tecnologia que Une
-            <span className="text-gradient"> Biologia e Digital</span>
+            {t("features.title1")}
+            <span className="text-gradient"> {t("features.title2")}</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -146,8 +149,7 @@ const Features = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-muted-foreground text-lg leading-relaxed"
           >
-            O BioSynthNet Module™ integra processos biológicos avançados com monitoramento 
-            digital acessível, oferecendo uma solução sustentável e educativa.
+            {t("features.description")}
           </motion.p>
         </motion.div>
 
