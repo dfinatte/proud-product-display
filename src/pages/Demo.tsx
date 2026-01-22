@@ -2,17 +2,26 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, RadialBarChart, RadialBar
 } from "recharts";
 import {
   ArrowLeft, Activity, Droplets, Thermometer, Eye, Zap, Bell,
   Settings, BarChart3, FileText, Home, Cpu, Wifi, WifiOff,
-  TrendingUp, AlertTriangle, CheckCircle, RefreshCw
+  TrendingUp, AlertTriangle, CheckCircle, RefreshCw, Download,
+  Calendar, Clock, FileBarChart, Wrench
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Simulated modules
 const modules = [
@@ -20,6 +29,71 @@ const modules = [
   { id: 2, name: "BioSynthNet #002", location: "Comunidade Vila Verde", status: "online", efficiency: 92 },
   { id: 3, name: "BioSynthNet #003", location: "Laboratório UNESP", status: "online", efficiency: 95 },
   { id: 4, name: "BioSynthNet #004", location: "ONG Água Limpa", status: "offline", efficiency: 0 },
+];
+
+// Simulated history data (last 7 days)
+const generateHistoryData = () => {
+  const data = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    data.push({
+      date: date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+      avgPh: (6.5 + Math.random() * 0.8).toFixed(2),
+      avgTurbidity: Math.floor(8 + Math.random() * 15),
+      cycles: Math.floor(10 + Math.random() * 15),
+      efficiency: Math.floor(82 + Math.random() * 15),
+      status: Math.random() > 0.2 ? "excellent" : Math.random() > 0.5 ? "good" : "regular",
+    });
+  }
+  return data;
+};
+
+// Simulated reports data
+const generateReports = (t: (key: string) => string) => [
+  {
+    id: 1,
+    type: "monthly",
+    title: t("demo.monthlyReport"),
+    date: "15/01/2025",
+    icon: Calendar,
+    stats: { cycles: 342, efficiency: 89, water: "3.420L", uptime: "99.2%" }
+  },
+  {
+    id: 2,
+    type: "weekly",
+    title: t("demo.weeklyReport"),
+    date: "20/01/2025",
+    icon: Clock,
+    stats: { cycles: 87, efficiency: 91, water: "870L", uptime: "100%" }
+  },
+  {
+    id: 3,
+    type: "maintenance",
+    title: t("demo.maintenanceReport"),
+    date: "10/01/2025",
+    icon: Wrench,
+    stats: { cycles: 0, efficiency: 0, water: "0L", uptime: "N/A" }
+  },
+  {
+    id: 4,
+    type: "efficiency",
+    title: t("demo.efficiencyReport"),
+    date: "18/01/2025",
+    icon: FileBarChart,
+    stats: { cycles: 156, efficiency: 94, water: "1.560L", uptime: "98.5%" }
+  },
+];
+
+// Weekly performance chart data
+const weeklyPerformanceData = [
+  { day: "Seg", efficiency: 88, cycles: 14 },
+  { day: "Ter", efficiency: 92, cycles: 16 },
+  { day: "Qua", efficiency: 85, cycles: 12 },
+  { day: "Qui", efficiency: 94, cycles: 18 },
+  { day: "Sex", efficiency: 91, cycles: 15 },
+  { day: "Sáb", efficiency: 89, cycles: 13 },
+  { day: "Dom", efficiency: 87, cycles: 11 },
 ];
 
 const generateData = () => {
@@ -42,6 +116,8 @@ const Demo = () => {
   const [selectedModule, setSelectedModule] = useState<number | null>(1);
   const [data, setData] = useState(generateData());
   const [activeView, setActiveView] = useState<"overview" | "history" | "reports">("overview");
+  const [historyData] = useState(generateHistoryData());
+  const reports = generateReports(t);
   const [notifications] = useState([
     { id: 1, type: "success", message: "Módulo #001 calibrado com sucesso", time: "5 min" },
     { id: 2, type: "warning", message: "Turbidez elevada detectada no #002", time: "1h" },
@@ -68,6 +144,22 @@ const Demo = () => {
   const efficiencyData = [
     { name: 'Efficiency', value: selectedModuleData?.efficiency || 0, fill: 'hsl(175, 65%, 45%)' }
   ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "excellent": return "text-bio-green bg-bio-green/20";
+      case "good": return "text-accent bg-accent/20";
+      default: return "text-amber-500 bg-amber-500/20";
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "excellent": return t("demo.excellent");
+      case "good": return t("demo.good");
+      default: return t("demo.regular");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-water-deep flex">
@@ -199,10 +291,10 @@ const Demo = () => {
 
         {/* Content */}
         <div className="p-8">
-          {selectedModuleData ? (
-            <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
+            {activeView === "overview" && selectedModuleData && (
               <motion.div
-                key={selectedModule}
+                key="overview"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -389,7 +481,7 @@ const Demo = () => {
                             whileHover={{ x: 5 }}
                           >
                             {notif.type === "success" && <CheckCircle className="w-5 h-5 text-bio-green mt-0.5" />}
-                            {notif.type === "warning" && <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />}
+                            {notif.type === "warning" && <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5" />}
                             {notif.type === "info" && <Activity className="w-5 h-5 text-accent mt-0.5" />}
                             <div className="flex-1">
                               <p className="text-sm text-primary-foreground">{notif.message}</p>
@@ -402,12 +494,218 @@ const Demo = () => {
                   </div>
                 </div>
               </motion.div>
-            </AnimatePresence>
-          ) : (
-            <div className="flex items-center justify-center h-96">
-              <p className="text-water-medium">{t("demo.selectModule")}</p>
-            </div>
-          )}
+            )}
+
+            {activeView === "history" && (
+              <motion.div
+                key="history"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-display text-2xl font-bold text-primary-foreground">
+                      {t("demo.historyTitle")}
+                    </h3>
+                    <p className="text-water-medium">{t("demo.last7Days")}</p>
+                  </div>
+                  <Button variant="hero" size="sm">
+                    <Download className="w-4 h-4 mr-2" />
+                    {t("demo.download")}
+                  </Button>
+                </div>
+
+                {/* History Table */}
+                <motion.div
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-white/10 hover:bg-white/5">
+                        <TableHead className="text-water-medium">{t("demo.date")}</TableHead>
+                        <TableHead className="text-water-medium">{t("demo.avgPh")}</TableHead>
+                        <TableHead className="text-water-medium">{t("demo.avgTurbidity")}</TableHead>
+                        <TableHead className="text-water-medium">{t("demo.cycles")}</TableHead>
+                        <TableHead className="text-water-medium">{t("demo.efficiency")}</TableHead>
+                        <TableHead className="text-water-medium">{t("demo.status")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {historyData.map((row, index) => (
+                        <motion.tr
+                          key={row.date}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="border-white/10 hover:bg-white/5"
+                        >
+                          <TableCell className="text-primary-foreground font-medium">{row.date}</TableCell>
+                          <TableCell className="text-primary-foreground">{row.avgPh}</TableCell>
+                          <TableCell className="text-primary-foreground">{row.avgTurbidity} NTU</TableCell>
+                          <TableCell className="text-primary-foreground">{row.cycles}</TableCell>
+                          <TableCell className="text-primary-foreground">{row.efficiency}%</TableCell>
+                          <TableCell>
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(row.status)}`}>
+                              {getStatusText(row.status)}
+                            </span>
+                          </TableCell>
+                        </motion.tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </motion.div>
+
+                {/* Performance Chart */}
+                <motion.div
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h4 className="font-display text-lg font-semibold text-primary-foreground mb-4">
+                    {t("demo.performanceChart")}
+                  </h4>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={weeklyPerformanceData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <XAxis dataKey="day" stroke="rgba(255,255,255,0.3)" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
+                        <YAxis stroke="rgba(255,255,255,0.3)" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: 'hsl(210, 30%, 12%)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '12px',
+                            color: 'white'
+                          }}
+                        />
+                        <Bar dataKey="efficiency" fill="hsl(175, 65%, 45%)" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="cycles" fill="hsl(185, 70%, 35%)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+
+            {activeView === "reports" && (
+              <motion.div
+                key="reports"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div>
+                  <h3 className="font-display text-2xl font-bold text-primary-foreground">
+                    {t("demo.reportsTitle")}
+                  </h3>
+                  <p className="text-water-medium">{selectedModuleData?.name}</p>
+                </div>
+
+                {/* Reports Grid */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  {reports.map((report, index) => (
+                    <motion.div
+                      key={report.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-accent/30 transition-all group"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center">
+                            <report.icon className="w-6 h-6 text-accent" />
+                          </div>
+                          <div>
+                            <h4 className="font-display font-semibold text-primary-foreground">{report.title}</h4>
+                            <p className="text-xs text-water-medium">{t("demo.generated")} {report.date}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-water-medium">{t("demo.totalCycles")}</p>
+                          <p className="text-lg font-bold text-primary-foreground">{report.stats.cycles}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-water-medium">{t("demo.avgEfficiency")}</p>
+                          <p className="text-lg font-bold text-primary-foreground">{report.stats.efficiency}%</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-water-medium">{t("demo.waterTreated")}</p>
+                          <p className="text-lg font-bold text-primary-foreground">{report.stats.water}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-3">
+                          <p className="text-xs text-water-medium">{t("demo.uptime")}</p>
+                          <p className="text-lg font-bold text-primary-foreground">{report.stats.uptime}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button variant="hero" size="sm" className="flex-1">
+                          <Eye className="w-4 h-4 mr-2" />
+                          {t("demo.view")}
+                        </Button>
+                        <Button variant="heroOutline" size="sm" className="flex-1">
+                          <Download className="w-4 h-4 mr-2" />
+                          PDF
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Summary Chart */}
+                <motion.div
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <h4 className="font-display text-lg font-semibold text-primary-foreground mb-4">
+                    {t("demo.performanceChart")}
+                  </h4>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={weeklyPerformanceData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <XAxis dataKey="day" stroke="rgba(255,255,255,0.3)" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
+                        <YAxis stroke="rgba(255,255,255,0.3)" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: 'hsl(210, 30%, 12%)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '12px',
+                            color: 'white'
+                          }}
+                        />
+                        <Line type="monotone" dataKey="efficiency" stroke="hsl(175, 65%, 45%)" strokeWidth={3} dot={{ fill: 'hsl(175, 65%, 45%)' }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+
+            {activeView === "overview" && !selectedModuleData && (
+              <motion.div
+                key="no-module"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center justify-center h-96"
+              >
+                <p className="text-water-medium">{t("demo.selectModule")}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </div>
