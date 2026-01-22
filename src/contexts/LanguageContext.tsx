@@ -340,6 +340,11 @@ export const translations: Translations = {
     en: "Last 60 minutes",
     es: "Últimos 60 minutos",
   },
+  "dashboard.history": {
+    pt: "Histórico",
+    en: "History",
+    es: "Historial",
+  },
   "dashboard.comparison": {
     pt: "Comparação entrada vs saída",
     en: "Input vs output comparison",
@@ -722,6 +727,128 @@ export const translations: Translations = {
     pt: "Laboratório",
     en: "Laboratory",
     es: "Laboratorio",
+  },
+  // History View
+  "demo.historyTitle": {
+    pt: "Histórico de Dados",
+    en: "Data History",
+    es: "Historial de Datos",
+  },
+  "demo.last7Days": {
+    pt: "Últimos 7 dias",
+    en: "Last 7 days",
+    es: "Últimos 7 días",
+  },
+  "demo.date": {
+    pt: "Data",
+    en: "Date",
+    es: "Fecha",
+  },
+  "demo.avgPh": {
+    pt: "pH Médio",
+    en: "Avg pH",
+    es: "pH Promedio",
+  },
+  "demo.avgTurbidity": {
+    pt: "Turbidez Média",
+    en: "Avg Turbidity",
+    es: "Turbidez Promedio",
+  },
+  "demo.cycles": {
+    pt: "Ciclos",
+    en: "Cycles",
+    es: "Ciclos",
+  },
+  "demo.efficiency": {
+    pt: "Eficiência",
+    en: "Efficiency",
+    es: "Eficiencia",
+  },
+  "demo.status": {
+    pt: "Status",
+    en: "Status",
+    es: "Estado",
+  },
+  "demo.excellent": {
+    pt: "Excelente",
+    en: "Excellent",
+    es: "Excelente",
+  },
+  "demo.good": {
+    pt: "Bom",
+    en: "Good",
+    es: "Bueno",
+  },
+  "demo.regular": {
+    pt: "Regular",
+    en: "Regular",
+    es: "Regular",
+  },
+  // Reports View
+  "demo.reportsTitle": {
+    pt: "Relatórios do Sistema",
+    en: "System Reports",
+    es: "Informes del Sistema",
+  },
+  "demo.monthlyReport": {
+    pt: "Relatório Mensal",
+    en: "Monthly Report",
+    es: "Informe Mensual",
+  },
+  "demo.weeklyReport": {
+    pt: "Relatório Semanal",
+    en: "Weekly Report",
+    es: "Informe Semanal",
+  },
+  "demo.maintenanceReport": {
+    pt: "Relatório de Manutenção",
+    en: "Maintenance Report",
+    es: "Informe de Mantenimiento",
+  },
+  "demo.efficiencyReport": {
+    pt: "Relatório de Eficiência",
+    en: "Efficiency Report",
+    es: "Informe de Eficiencia",
+  },
+  "demo.generated": {
+    pt: "Gerado em",
+    en: "Generated on",
+    es: "Generado el",
+  },
+  "demo.download": {
+    pt: "Baixar PDF",
+    en: "Download PDF",
+    es: "Descargar PDF",
+  },
+  "demo.view": {
+    pt: "Visualizar",
+    en: "View",
+    es: "Ver",
+  },
+  "demo.totalCycles": {
+    pt: "Total de Ciclos",
+    en: "Total Cycles",
+    es: "Ciclos Totales",
+  },
+  "demo.avgEfficiency": {
+    pt: "Eficiência Média",
+    en: "Avg Efficiency",
+    es: "Eficiencia Promedio",
+  },
+  "demo.waterTreated": {
+    pt: "Água Tratada",
+    en: "Water Treated",
+    es: "Agua Tratada",
+  },
+  "demo.uptime": {
+    pt: "Tempo Ativo",
+    en: "Uptime",
+    es: "Tiempo Activo",
+  },
+  "demo.performanceChart": {
+    pt: "Gráfico de Desempenho",
+    en: "Performance Chart",
+    es: "Gráfico de Rendimiento",
   },
 };
 
