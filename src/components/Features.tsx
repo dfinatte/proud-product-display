@@ -99,7 +99,7 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-water relative overflow-hidden">
+    <section id="features" className="py-24 bg-gradient-water relative overflow-hidden scroll-mt-20">
       {/* Animated Background Blobs */}
       <motion.div 
         className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"

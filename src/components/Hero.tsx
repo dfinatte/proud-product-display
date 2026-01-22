@@ -136,7 +136,15 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button variant="hero" size="lg" className="group">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="group"
+              onClick={() => {
+                const featuresSection = document.getElementById('features');
+                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               <span>{t("hero.learnMore")}</span>
               <motion.div
                 animate={{ y: [0, -3, 0] }}
